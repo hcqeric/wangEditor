@@ -291,7 +291,7 @@ UploadImg.prototype = {
             })
 
             // 跨域传 cookie
-            xhr.withCredentials = withCredentials
+            // xhr.withCredentials = withCredentials
 
             // 发送请求
             xhr.send(formdata)
