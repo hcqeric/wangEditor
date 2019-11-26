@@ -169,6 +169,11 @@ const config = {
         // console.log(url)  // url 即插入图片的地址
     },
 
+    // 插入网络视频的回调
+    linkVideoCallback: function (url) {
+        // console.log(url)  // url 即插入视频的地址
+    },
+
     // 默认上传图片 max size: 5M
     uploadImgMaxSize: 5 * 1024 * 1024,
 

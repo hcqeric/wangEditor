@@ -49,3 +49,23 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw*
+
+# Log files
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env.local
+.env.*.local
+
+# package-lock.json
+package-lock.json

@@ -7,80 +7,106 @@ import Panel from '../panel.js'
 
 // 构造函数
 function Video(editor) {
-    this.editor = editor
-    this.$elem = $('<div class="w-e-menu"><i class="w-e-icon-play"></i></div>')
-    this.type = 'panel'
+    this.editor = editor;
+    this.$elem = $('<div class="w-e-menu"><i class="w-e-icon-play"><i/></div>');
+    this.type = 'panel';
 
     // 当前是否 active 状态
-    this._active = false
+    this._active = false;
 }
 
 // 原型
 Video.prototype = {
+
     constructor: Video,
 
-    onClick: function () {
-        this._createPanel()
+    onClick: function onClick() {
+        this._createInsertPanel();
     },
 
-    _createPanel: function () {
-        // 创建 id
-        const textValId = getRandom('text-val')
-        const btnId = getRandom('btn')
+    _createInsertPanel: function _createInsertPanel() {
+        var editor = this.editor;
+        var uploadVideo = editor.uploadVideo;
+        var config = editor.config;
 
-        // 创建 panel
-        const panel = new Panel(this, {
-            width: 350,
-            // 一个 panel 多个 tab
-            tabs: [
-                {
-                    // 标题
-                    title: '插入视频',
-                    // 模板
-                    tpl: `<div>
-                        <input id="${textValId}" type="text" class="block" placeholder="格式如：<iframe src=... ><\/iframe>"/>
-                        <div class="w-e-button-container">
-                            <button id="${btnId}" class="right">插入</button>
-                        </div>
-                    </div>`,
-                    // 事件绑定
-                    events: [
-                        {
-                            selector: '#' + btnId,
-                            type: 'click',
-                            fn: () => {
-                                const $text = $('#' + textValId)
-                                const val = $text.val().trim()
+        // id
+        var upTriggerId = getRandom('up-trigger');
+        var upFileId = getRandom('up-file');
 
-                                // 测试用视频地址
-                                // <iframe height=498 width=510 src='http://player.youku.com/embed/XMjcwMzc3MzM3Mg==' frameborder=0 'allowfullscreen'></iframe>
+        // tabs 的配置
+        var tabsConfig = [{
+            title: '上传 video',
+            tpl: '<div class="w-e-up-img-container">\n                    ' +
+              '<div id="' + upTriggerId + '" class="w-e-up-btn">\n                        ' +
+              '<i class="w-e-icon-upload2"></i>\n                    </div>\n                    ' +
+              '<div style="display:none;">\n                        <input id="' + upFileId + '" type="file" multiple="multiple" accept="audio/mp4, video/mp4"/>\n                    ' +
+              '</div>\n                            </div>',
+            events: [{
+                // 触发选择视频
+                selector: '#' + upTriggerId,
+                type: 'click',
+                fn: function fn() {
+                    var $file = $('#' + upFileId);
+                    var fileElem = $file[0];
+                    if (fileElem) {
+                        fileElem.click();
+                    } else {
+                        // 返回 true 可关闭 panel
+                        return true;
+                    }
+                }
+            }, {
+                // 选择视频完毕
+                selector: '#' + upFileId,
+                type: 'change',
+                fn: function fn() {
+                    var $file = $('#' + upFileId);
+                    var fileElem = $file[0];
+                    if (!fileElem) {
+                        // 返回 true 可关闭 panel
+                        return true;
+                    }
 
-                                if (val) {
-                                    // 插入视频
-                                    this._insert(val)
-                                }
+                    // 获取选中的 file 对象列表
+                    var fileList = fileElem.files;
+                    if (fileList.length) {
+                        uploadVideo.uploadVideo(fileList);
+                    }
 
-                                // 返回 true，表示该事件执行完之后，panel 要关闭。否则 panel 不会关闭
-                                return true
-                            }
-                        }
-                    ]
-                } // first tab end
-            ] // tabs end
-        }) // panel end
+                    // 返回 true 可关闭 panel
+                    return true;
+                }
+            }]
+        }
+        ]; // tabs end
 
-        // 显示 panel
-        panel.show()
+        // 判断 tabs 的显示
+        var tabsConfigResult = [];
+        tabsConfigResult.push(tabsConfig[0]);
+
+        // 创建 panel 并显示
+        var panel = new Panel(this, {
+            width: 300,
+            tabs: tabsConfigResult
+        });
+        panel.show();
 
         // 记录属性
-        this.panel = panel
+        this.panel = panel;
     },
 
-    // 插入视频
-    _insert: function (val) {
-        const editor = this.editor
-        editor.cmd.do('insertHTML', val + '<p><br></p>')
+    // 试图改变 active 状态
+    tryChangeActive: function tryChangeActive(e) {
+        var editor = this.editor;
+        var $elem = this.$elem;
+        if (editor._selectedImg) {
+            this._active = true;
+            $elem.addClass('w-e-active');
+        } else {
+            this._active = false;
+            $elem.removeClass('w-e-active');
+        }
     }
-}
+};
 
 export default Video
