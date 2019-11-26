@@ -4389,6 +4389,8 @@ UploadVideo.prototype = {
   },
   //插入视频的方法  需要单独定义
   insertLinkVideo: function insertLinkVideo(link) {
+    var _this = this;
+
     if (!link) {
       return;
     }
@@ -4421,7 +4423,7 @@ UploadVideo.prototype = {
     video.onerror = function () {
       video = null;
       // 无法成功下载图片
-      this._alert('插入视频错误', 'wangEditor: \u63D2\u5165\u56FE\u7247\u51FA\u9519\uFF0C\u56FE\u7247\u94FE\u63A5\u662F "' + link + '"\uFF0C\u4E0B\u8F7D\u8BE5\u94FE\u63A5\u5931\u8D25');
+      _this._alert('插入视频错误', 'wangEditor: \u63D2\u5165\u56FE\u7247\u51FA\u9519\uFF0C\u56FE\u7247\u94FE\u63A5\u662F "' + link + '"\uFF0C\u4E0B\u8F7D\u8BE5\u94FE\u63A5\u5931\u8D25');
       return;
     };
     video.onabort = function () {
@@ -4431,6 +4433,7 @@ UploadVideo.prototype = {
   },
   // 上传视频
   uploadVideo: function uploadVideo(files) {
+    var _this2 = this;
 
     if (!files || !files.length) {
       return;
@@ -4552,7 +4555,7 @@ UploadVideo.prototype = {
           hooks.timeout(xhr, editor);
         }
 
-        this._alert('上传视频超时');
+        _this2._alert('上传视频超时');
       };
 
       // 监控 progress
@@ -4570,6 +4573,7 @@ UploadVideo.prototype = {
 
       // 返回数据
       xhr.onreadystatechange = function () {
+        var _this6 = _this2;
         var result = void 0;
         if (xhr.readyState === 4) {
           if (xhr.status < 200 || xhr.status >= 300) {
@@ -4579,7 +4583,7 @@ UploadVideo.prototype = {
             }
 
             // xhr 返回状态错误
-            this._alert('上传视频发生错误', '\u4E0A\u4F20\u56FE\u7247\u53D1\u751F\u9519\u8BEF\uFF0C\u670D\u52A1\u5668\u8FD4\u56DE\u72B6\u6001\u662F ' + xhr.status);
+            _this2._alert('上传视频发生错误', '\u4E0A\u4F20\u56FE\u7247\u53D1\u751F\u9519\u8BEF\uFF0C\u670D\u52A1\u5668\u8FD4\u56DE\u72B6\u6001\u662F ' + xhr.status);
             return;
           }
           result = xhr.responseText;
@@ -4591,7 +4595,7 @@ UploadVideo.prototype = {
               if (hooks.fail && typeof hooks.fail === 'function') {
                 hooks.fail(xhr, editor, result);
               }
-              this._alert('上传视频失败', '上传视频返回结果错误，返回结果是: ' + result);
+              _this2._alert('上传视频失败', '上传视频返回结果错误，返回结果是: ' + result);
               return;
             }
           }
@@ -4602,11 +4606,10 @@ UploadVideo.prototype = {
             }
 
             // 数据错误
-            this._alert('上传视频失败', '上传视频返回结果错误，返回结果 errno=' + result.errno);
+            _this2._alert('上传视频失败', '上传视频返回结果错误，返回结果 errno=' + result.errno);
           } else {
-            console.log(hooks.customInsert && typeof hooks.customInsert === 'function');
             if (hooks.customInsert && typeof hooks.customInsert === 'function') {
-              hooks.customInsert(this.insertLinkVideo.bind(this), result, editor);
+              hooks.customInsert(_this2.insertLinkVideo.bind(_this2), result, editor);
             } else {
               // 将视频插入编辑器
               var data = result || [];
@@ -4614,7 +4617,7 @@ UploadVideo.prototype = {
               //     console.log(link);
               //
               // });
-              this.insertLinkVideo('' + uploadedVideoServer + data.rows.path);
+              _this2.insertLinkVideo('' + uploadedVideoServer + data.rows.path);
             }
             // hook - success
             if (hooks.success && typeof hooks.success === 'function') {

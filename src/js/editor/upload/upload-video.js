@@ -62,7 +62,7 @@ UploadVideo.prototype = {
 
       video = null;
     };
-    video.onerror = function () {
+    video.onerror =  () => {
       video = null;
       // 无法成功下载图片
       this._alert('插入视频错误', 'wangEditor: \u63D2\u5165\u56FE\u7247\u51FA\u9519\uFF0C\u56FE\u7247\u94FE\u63A5\u662F "' + link + '"\uFF0C\u4E0B\u8F7D\u8BE5\u94FE\u63A5\u5931\u8D25');
@@ -110,7 +110,7 @@ UploadVideo.prototype = {
     // ------------------------------ 验证文件信息 ------------------------------
     const resultFiles = [];
     let errInfo = [];
-    arrForEach(files, function (file) {
+    arrForEach(files, (file) => {
       let name = file.name;
       let size = file.size;
 
@@ -154,7 +154,7 @@ UploadVideo.prototype = {
     
     // 添加视频数据
     let formdata = new FormData();
-    arrForEach(resultFiles, function (file) {
+    arrForEach(resultFiles,  (file) => {
       formdata.append(uploadFileName, file);
       formdata.append('typeName', '');
     });
@@ -190,7 +190,7 @@ UploadVideo.prototype = {
       xhr.send(formdata);
       // 设置超时
       xhr.timeout = timeout;
-      xhr.ontimeout = function () {
+      xhr.ontimeout =  () => {
         // hook - timeout
         if (hooks.timeout && typeof hooks.timeout === 'function') {
           hooks.timeout(xhr, editor);
@@ -201,7 +201,7 @@ UploadVideo.prototype = {
 
       // 监控 progress
       if (xhr.upload) {
-        xhr.upload.onprogress = function (e) {
+        xhr.upload.onprogress = e => {
           let percent
           // 进度条
           const progressBar = new Progress(editor);
@@ -213,7 +213,8 @@ UploadVideo.prototype = {
       }
 
       // 返回数据
-      xhr.onreadystatechange = function () {
+      xhr.onreadystatechange = () => {
+        var _this6 = this;
         let result
         if (xhr.readyState === 4) {
           if (xhr.status < 200 || xhr.status >= 300) {
@@ -248,7 +249,6 @@ UploadVideo.prototype = {
             // 数据错误
             this._alert('上传视频失败', '上传视频返回结果错误，返回结果 errno=' + result.errno);
           } else {
-            console.log(hooks.customInsert && typeof hooks.customInsert === 'function');
             if (hooks.customInsert && typeof hooks.customInsert === 'function') {
               hooks.customInsert(this.insertLinkVideo.bind(this), result, editor);
             } else {
@@ -281,7 +281,7 @@ UploadVideo.prototype = {
       }
 
       // 自定义 headers
-      objForEach(uploadVideoHeaders, function (key, val) {
+      objForEach(uploadVideoHeaders,  (key, val) => {
         xhr.setRequestHeader(key, val);
       });
 
